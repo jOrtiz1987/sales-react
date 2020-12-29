@@ -6,39 +6,59 @@ import PropTypes from "prop-types";
 import {getCategorias} from "../actions/categoriaActions"
 import {getProductos} from "../actions/productoActions";
 import CategoriaItem from './Categoria/CategoriaItem';
+import EmpresaItem from './Empresa/EmpresaItem';
+import {getEmpresas} from "../actions/empresaActions";
+import Carousel from 'react-bootstrap/Carousel';
 
 class Producto extends Component {
 
     componentDidMount(){
         this.props.getCategorias();
         this.props.getProductos();
+        this.props.getEmpresas();
     }
 
     render() {
         const{categorias} = this.props.categorias;
         const{productos} = this.props.productos;
+        const{empresas} = this.props.empresas;
 
         let listadoContent;
+        let empresasItems = [];
         let categoriasItems = [];
         let jugetesItems = [];
         let electronicosItems = [];
         let otrosItems = [];
 
         const AlgoritmoListado = productos => {
-            if(categorias.length < 1){
+            if(empresas.length < 1){
+                return (
+                    <div className="alert alert-info text-center" role="alert">
+                        No hay empresas en el listado
+                    </div>
+                )
+            }else if(categorias.length < 1){
                 return (
                     <div className="alert alert-info text-center" role="alert">
                         No hay categorias en el listado
                     </div>
                 )
-            }
-            else if(productos.length < 0){
+            }else if(productos.length < 0){
                 return (
                     <div className="alert alert-info text-center" role="alert">
                         No hay productos en el listado
                     </div>
                 )
             }else{
+
+                const emps = empresas.map(empresa =>(
+                    <EmpresaItem key={empresa.id} empresa={empresa} />
+                ))
+
+                for(let k=0; k<emps.length; k++){
+                    empresasItems.push(emps[k]);
+                }
+
                 const cats = categorias.map(categoria =>(
                     <CategoriaItem key={categoria.id} categoria={categoria} />
                 ))
@@ -68,6 +88,14 @@ class Producto extends Component {
                 <React.Fragment>
                     <div className="container">
                         <div className="row">
+                            <div className="col-md-4">
+                                <div className="card text-center mb-2">
+                                    <div className="card-header bg-secondary text-white">
+                                        <h3>Empresas</h3>
+                                    </div>
+                                </div>
+                                {empresasItems}
+                            </div>
                             <div className="col-md-4">
                                 <div className="card text-center mb-2">
                                     <div className="card-header bg-secondary text-white">
@@ -120,7 +148,52 @@ class Producto extends Component {
                 </Link>
                 <br />
                 <hr />
+                <Link to="/agregarEmpresa" className="btn btn-primary mb-3">
+                    <i className="fas fa-plus-circle"> Crear Empresa</i>
+                </Link>
+
+                <br />
+                <hr />
+                <Carousel>
+                    <Carousel.Item interval={10000}>
+                        <img
+                        className="d-block w-100"
+                        src="holder.js/800x400?text=First slide&bg=373940"
+                        alt="First slide"
+                        />
+                        <Carousel.Caption>
+                        <h3>First slide label</h3>
+                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item interval={10000}>
+                        <img
+                        className="d-block w-100"
+                        src="holder.js/800x400?text=Second slide&bg=282c34"
+                        alt="Second slide"
+                        />
+                        <Carousel.Caption>
+                        <h3>Second slide label</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item interval={10000}>
+                        <img
+                        className="d-block w-100"
+                        src="holder.js/800x400?text=Third slide&bg=20232a"
+                        alt="Third slide"
+                        />
+                        <Carousel.Caption>
+                        <h3>Third slide label</h3>
+                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                </Carousel>
+
+                <br />
+                <hr />
                 {listadoContent}
+
             </div>
         )
     }
@@ -129,12 +202,14 @@ class Producto extends Component {
 Producto.propTypes = {
     getCategorias: PropTypes.func.isRequired,
     getProductos: PropTypes.func.isRequired,
+    getEmpresas: PropTypes.func.isRequired,
     productos: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
     categorias: state.categoria,
-    productos: state.producto
+    productos: state.producto,
+    empresas: state.empresa
 });
 
-export default connect(mapStateToProps, {getCategorias, getProductos}) (Producto);
+export default connect(mapStateToProps, {getCategorias, getProductos, getEmpresas}) (Producto);

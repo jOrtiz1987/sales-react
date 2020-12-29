@@ -5,6 +5,7 @@ import Producto from './components/Producto';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import AgregarProducto from './components/Producto/AgregarProducto';
 import AgregarCategoria from './components/Categoria/AgregarCategoria';
+import AgregarEmpresa from './components/Empresa/AgregarEmpresa';
 import {Provider} from "react-redux"
 import store from "./store"
 
@@ -17,6 +18,7 @@ function App() {
           <Route exact path="/" component={Producto} />
           <Route exact path="/agregarProducto" component={AgregarProducto} />
           <Route exact path="/agregarCategoria" component={AgregarCategoria} />
+          <Route exact path="/agregarEmpresa" component={AgregarEmpresa} />
         </div>
       </Router>
     </Provider>
